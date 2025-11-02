@@ -297,7 +297,8 @@ if uploaded_file:
                 })
                 prob_df = prob_df.sort_values(by="Probability", ascending=False).reset_index(drop=True)
                 st.dataframe(prob_df, 
-                             use_container_width=True,
+                             # --- FIX: Replaced 'use_container_width' with 'width' ---
+                             width='stretch',
                              column_config={
                                  "Probability": st.column_config.ProgressColumn(
                                      "Probability",
@@ -305,7 +306,6 @@ if uploaded_file:
                                      # --- FIX: Renamed arguments ---
                                      min_value=0,
                                      max_value=1
-                                     # --- END FIX ---
                                  )
                              })
                 # --- END NEW FEATURE ---
@@ -325,8 +325,14 @@ if uploaded_file:
             colormap = st.selectbox("Select Color Map", ['viridis', 'plasma', 'inferno', 'magma'], index=0)
 
             fig_spec, ax_spec = plt.subplots(figsize=(8, 3))
-            librosa.display.specshow(features[0, :, :, 0], sr=sr, x_axis='time', y_axis='mel', cmap=colormap, ax=ax_spec)
-            plt.colorbar(fig_spec.colorbar(plt.cm.ScalarMappable(cmap=colormap), ax=ax_spec), ax=ax_spec, format='%+2.0f dB')
+            
+            # --- FIX: Correct way to create a colorbar ---
+            # 1. specshow returns the "mappable" artist
+            img = librosa.display.specshow(features[0, :, :, 0], sr=sr, x_axis='time', y_axis='mel', cmap=colormap, ax=ax_spec)
+            # 2. Pass the mappable 'img' to the figure's colorbar method
+            fig_spec.colorbar(img, ax=ax_spec, format='%+2.0f dB')
+            # --- END FIX ---
+
             ax_spec.set_title(f"Mel Spectrogram - {label}", fontsize=12)
             ax_spec.set_xlabel("Time (s)", fontsize=10)
             ax_spec.set_ylabel("Frequency (Hz)", fontsize=10)
