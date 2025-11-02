@@ -302,8 +302,10 @@ if uploaded_file:
                                  "Probability": st.column_config.ProgressColumn(
                                      "Probability",
                                      format="%.2f%%",
-                                     min_val=0,
-                                     max_val=1,
+                                     # --- FIX: Renamed arguments ---
+                                     min_value=0,
+                                     max_value=1
+                                     # --- END FIX ---
                                  )
                              })
                 # --- END NEW FEATURE ---
