@@ -292,7 +292,8 @@ if uploaded_file:
                 st.subheader("All Class Probabilities")
                 prob_df = pd.DataFrame({
                     "Class": [class_mapping.get(i, "Unknown") for i in range(len(prediction[0]))],
-                    "Probability": prediction[0]
+                    # --- FIX FOR TypeError: Convert numpy.float32 to standard float ---
+                    "Probability": prediction[0].astype(float) 
                 })
                 prob_df = prob_df.sort_values(by="Probability", ascending=False).reset_index(drop=True)
                 st.dataframe(prob_df, 
